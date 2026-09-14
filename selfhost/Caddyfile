@@ -1,0 +1,4 @@
+# vps: loopback only, tls in front
+push.example.com {
+	reverse_proxy 127.0.0.1:8087
+}
