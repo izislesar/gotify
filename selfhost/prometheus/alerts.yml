@@ -1,0 +1,20 @@
+groups:
+  - name: gotify
+    interval: 30s
+    rules:
+      - alert: GotifyDown
+        expr: probe_success{job="gotify"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "gotify alert hub is down"
+          runbook: "docs/SELFHOST.md#up — restart container, check volume perms"
+
+      - alert: GotifySlow
+        expr: histogram_quantile(0.95, rate(probe_http_duration_seconds_bucket{job="gotify"}[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "gotify p95 over 500ms for 5m"
